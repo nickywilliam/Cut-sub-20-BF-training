@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Training Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0f0d;
+    --bg2: #161714;
+    --bg3: #1e1f1c;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e6df;
+    --text2: #8a8880;
+    --text3: #5a5855;
+    --accent: #c8f060;
+    --accent2: #8bb840;
+    --accent-dim: rgba(200,240,96,0.12);
+    --accent-dim2: rgba(200,240,96,0.06);
+    --legs: #f0b060;
+    --legs-dim: rgba(240,176,96,0.12);
+    --push: #60b4f0;
+    --push-dim: rgba(96,180,240,0.12);
+    --pull: #a06cf0;
+    --pull-dim: rgba(160,108,240,0.12);
+    --hyrox: #f06080;
+    --hyrox-dim: rgba(240,96,128,0.12);
+    --cf: #60e0c0;
+    --cf-dim: rgba(96,224,192,0.12);
+    --rest: #4a4845;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --r: 10px;
+    --r2: 16px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  html { background: var(--bg); }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(14,15,13,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 800;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+    padding: 16px 20px 16px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+    color: var(--text3); letter-spacing: .06em; text-transform: uppercase;
+    padding: 16px 14px; white-space: nowrap; flex-shrink: 0;
+    transition: color .2s; position: relative;
+  }
+  .nav-btn::after {
+    content: ''; position: absolute; bottom: 0; left: 14px; right: 14px;
+    height: 2px; background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transition: transform .2s;
+  }
+  .nav-btn.active { color: var(--text); }
+  .nav-btn.active::after { transform: scaleX(1); }
+
+  /* MAIN */
+  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 100px; }
+
+  .page { display: none; animation: fadeUp .3s ease both; }
+  .page.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TYPOGRAPHY */
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -.02em;
+    margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 14px; color: var(--text2); margin-bottom: 32px;
+    font-weight: 300; letter-spacing: .01em;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 700;
+    letter-spacing: -.01em; margin-bottom: 14px;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--text3); margin: 28px 0 10px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  /* WEEK GRID */
+  .week-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 6px; margin-bottom: 32px;
+  }
+  .day-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 10px 6px;
+    text-align: center; transition: border-color .2s, transform .15s;
+  }
+  .day-card:hover { transform: translateY(-2px); }
+  .day-name {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--text3); letter-spacing: .08em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .day-icon { font-size: 18px; margin-bottom: 6px; display: block; }
+  .day-tag {
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    letter-spacing: -.01em; display: block; margin-bottom: 2px;
+  }
+  .day-sub { font-size: 9px; color: var(--text3); line-height: 1.4; }
+
+  /* SESSION CARDS */
+  .session-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .session-tab {
+    background: none; border: 1px solid var(--border);
+    border-radius: 999px; cursor: pointer;
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text3); padding: 7px 16px;
+    transition: all .2s;
+  }
+  .session-tab.active {
+    color: var(--bg); font-weight: 500;
+  }
+  .session-panel { display: none; }
+  .session-panel.active { display: block; animation: fadeUp .25s ease both; }
+
+  /* EXERCISE ROWS */
+  .ex-row {
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 10px; align-items: start;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 12px 14px;
+    margin-bottom: 6px; transition: border-color .2s;
+  }
+  .ex-row:hover { border-color: var(--border2); }
+  .ex-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .ex-cue { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.5; }
+  .badge {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+    padding: 3px 9px; border-radius: 6px; white-space: nowrap;
+    align-self: start; letter-spacing: .02em;
+  }
+  .badge-sets { background: var(--accent-dim2); color: var(--accent2); border: 1px solid rgba(200,240,96,0.15); }
+  .badge-reps { background: rgba(255,255,255,0.04); color: var(--text2); border: 1px solid var(--border); }
+  .badge-time { background: rgba(96,224,192,0.08); color: var(--cf); border: 1px solid rgba(96,224,192,0.15); }
+  .badge-each { background: rgba(160,108,240,0.08); color: var(--pull); border: 1px solid rgba(160,108,240,0.15); }
+
+  .totals-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--accent-dim2); border: 1px solid rgba(200,240,96,0.1);
+    border-radius: var(--r); padding: 10px 14px; margin-top: 16px;
+  }
+  .totals-label { font-family: var(--font-mono); font-size: 11px; color: var(--text2); letter-spacing: .04em; }
+  .totals-val { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+
+  .tip {
+    border-left: 2px solid var(--accent);
+    background: var(--accent-dim2); border-radius: 0 var(--r) var(--r) 0;
+    padding: 12px 14px; margin-top: 14px;
+    font-size: 13px; color: var(--text2); line-height: 1.65;
+  }
+
+  /* RECOVERY CARDS */
+  .recovery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .recovery-grid { grid-template-columns: 1fr; } }
+
+  .rec-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 14px 16px;
+    transition: border-color .2s;
+  }
+  .rec-card:hover { border-color: var(--border2); }
+  .rec-title {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .rec-body { font-size: 12px; color: var(--text2); line-height: 1.65; }
+
+  .priority { font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 999px; letter-spacing: .04em; }
+  .p-high { background: rgba(240,96,128,0.12); color: var(--hyrox); border: 1px solid rgba(240,96,128,0.2); }
+  .p-med { background: rgba(240,176,96,0.12); color: var(--legs); border: 1px solid rgba(240,176,96,0.2); }
+  .p-low { background: rgba(96,224,192,0.1); color: var(--cf); border: 1px solid rgba(96,224,192,0.15); }
+
+  /* BOTTOM NAV (mobile) */
+  .bottom-nav {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(14,15,13,0.96);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 8px 0 calc(8px + var(--safe-bottom));
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .bn-btn {
+    background: none; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 6px 4px;
+  }
+  .bn-icon { font-size: 20px; transition: transform .2s; }
+  .bn-label {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text3); transition: color .2s;
+  }
+  .bn-btn.active .bn-label { color: var(--accent); }
+  .bn-btn.active .bn-icon { transform: translateY(-1px); }
+
+  @media (max-width: 600px) {
+    nav { display: none; }
+    .bottom-nav { display: grid; }
+    main { padding-bottom: calc(80px + var(--safe-bottom)); }
+  }
+
+  /* COLOR ASSIGNMENTS */
+  .c-legs { color: var(--legs); }
+  .c-push { color: var(--push); }
+  .c-pull { color: var(--pull); }
+  .c-hyrox { color: var(--hyrox); }
+  .c-cf { color: var(--cf); }
+  .c-rest { color: var(--rest); }
+  .c-accent { color: var(--accent); }
+
+  .border-legs { border-color: rgba(240,176,96,0.3); }
+  .border-push { border-color: rgba(96,180,240,0.3); }
+  .border-pull { border-color: rgba(160,108,240,0.3); }
+  .border-hyrox { border-color: rgba(240,96,128,0.3); }
+  .border-cf { border-color: rgba(96,224,192,0.3); }
+
+  .bg-legs { background: var(--legs-dim); }
+  .bg-push { background: var(--push-dim); }
+  .bg-pull { background: var(--pull-dim); }
+  .bg-hyrox { background: var(--hyrox-dim); }
+  .bg-cf { background: var(--cf-dim); }
+
+  .tab-legs.active { background: var(--legs); border-color: var(--legs); color: #1a1000; }
+  .tab-push.active { background: var(--push); border-color: var(--push); color: #001a28; }
+  .tab-pull.active { background: var(--pull); border-color: var(--pull); color: #1a0a30; }
+  .tab-hyrox.active { background: var(--hyrox); border-color: var(--hyrox); color: #2a0010; }
+  .tab-cf.active { background: var(--cf); border-color: var(--cf); color: #001a18; }
+
+  /* SCHEDULE INTRO */
+  .sched-intro {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 16px;
+    margin-bottom: 24px;
+    font-size: 13px; color: var(--text2); line-height: 1.7;
+  }
+  .sched-intro strong { color: var(--text); font-weight: 500; }
+
+  /* PHASE DIVIDER */
+  .phase-div {
+    display: flex; align-items: center; gap: 10px;
+    margin: 22px 0 10px;
+  }
+  .phase-div span {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text3); white-space: nowrap;
+  }
+  .phase-div::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* FLOW ROW */
+  .flow-row {
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap; margin: 16px 0 24px;
+  }
+  .flow-pill {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px;
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .flow-arrow { color: var(--text3); font-size: 14px; }
+
+  /* PROGRESS NOTE */
+  .prog-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 14px 16px; margin-bottom: 10px;
+  }
+  .prog-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+  .prog-body { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* STAT GRID */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+  @media (max-width: 400px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 14px;
+  }
+  .stat-val {
+    font-family: var(--font-display); font-size: 26px; font-weight: 800;
+    color: var(--accent); letter-spacing: -.03em; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 12px; color: var(--text2); }
+
+  /* HYROX ALERT */
+  .hyrox-note {
+    background: rgba(240,96,128,0.07);
+    border: 1px solid rgba(240,96,128,0.2);
+    border-radius: var(--r); padding: 12px 14px;
+    font-size: 13px; color: rgba(240,96,128,0.9); line-height: 1.6;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Training</div>
+  <button class="nav-btn active" onclick="showPage('schedule',this)">Schedule</button>
+  <button class="nav-btn" onclick="showPage('workouts',this)">Workouts</button>
+  <button class="nav-btn" onclick="showPage('warmups',this)">Warm-ups</button>
+  <button class="nav-btn" onclick="showPage('cooldowns',this)">Cool-downs</button>
+  <button class="nav-btn" onclick="showPage('recovery',this)">Recovery</button>
+</nav>
+
+<main>
+
+<!-- ===== SCHEDULE ===== -->
+<div id="page-schedule" class="page active">
+  <p class="page-title">Weekly<br><span class="c-accent">schedule</span></p>
+  <p class="page-sub">5 sessions · 2 rest days · built around Hyrox performance</p>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-val">5</div><div class="stat-label">Sessions / week</div></div>
+    <div class="stat-card"><div class="stat-val">4d</div><div class="stat-label">Legs → Hyrox gap</div></div>
+    <div class="stat-card"><div class="stat-val">sub20</div><div class="stat-label">Body fat goal</div></div>
+  </div>
+
+  <div class="week-grid">
+    <div class="day-card border-legs bg-legs">
+      <div class="day-name">Mon</div>
+      <div class="day-icon">🦵</div>
+      <div class="day-tag c-legs">Legs</div>
+      <div class="day-sub">Quads · Hams · Glutes</div>
+    </div>
+    <div class="day-card border-push bg-push">
+      <div class="day-name">Tue</div>
+      <div class="day-icon">💪</div>
+      <div class="day-tag c-push">Push</div>
+      <div class="day-sub">Chest · Shoulders · Tris</div>
+    </div>
+    <div class="day-card border-cf bg-cf">
+      <div class="day-name">Wed</div>
+      <div class="day-icon">🔥</div>
+      <div class="day-tag c-cf">Crossfit</div>
+      <div class="day-sub">Scale pressing if needed</div>
+    </div>
+    <div class="day-card border-pull bg-pull">
+      <div class="day-name">Thu</div>
+      <div class="day-icon">🔙</div>
+      <div class="day-tag c-pull">Pull</div>
+      <div class="day-sub">Back · Rear delts · Bis</div>
+    </div>
+    <div class="day-card border-hyrox bg-hyrox">
+      <div class="day-name">Fri</div>
+      <div class="day-icon">🏃</div>
+      <div class="day-tag c-hyrox">Hyrox</div>
+      <div class="day-sub">Legs fresh — 4 days rest</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name">Sat</div>
+      <div class="day-icon">🚶</div>
+      <div class="day-tag c-rest">Rest</div>
+      <div class="day-sub">Active recovery</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name">Sun</div>
+      <div class="day-icon">🍳</div>
+      <div class="day-tag c-rest">Rest</div>
+      <div class="day-sub">Batch cook</div>
+    </div>
+  </div>
+
+  <div class="sched-intro">
+    <strong>Why this order works:</strong> Legs on Monday gives your lower body the maximum possible recovery window before Friday's Hyrox — 4 full days. Push on Tuesday hits opposing muscles to Monday's session, so there's zero overlap. Crossfit on Wednesday acts as a buffer between Push and Pull, with upper-body pressing scaled if needed. Pull on Thursday means your back and biceps are completely fresh going into Hyrox. The two rest days bookend Hyrox for full recovery before the new training week.
+  </div>
+
+  <div class="section-label">Recovery flow</div>
+  <div class="flow-row">
+    <span class="flow-pill bg-legs c-legs border-legs" style="border:1px solid">Legs Mon</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-pill bg-push c-push border-push" style="border:1px solid">Push Tue</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-pill bg-cf c-cf border-cf" style="border:1px solid">Crossfit Wed</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-pill bg-pull c-pull border-pull" style="border:1px solid">Pull Thu</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-pill bg-hyrox c-hyrox border-hyrox" style="border:1px solid">Hyrox Fri</span>
+  </div>
+
+  <div class="section-label">Progression model</div>
+  <div class="prog-card">
+    <div class="prog-title">Double progression</div>
+    <div class="prog-body">Work within the listed rep range. Once you hit the top of the range across all sets, add weight next session and start at the bottom again. E.g. 3×10 at target → 3×10, 3×11, 3×12 → add 2.5kg → 3×10 again.</div>
+  </div>
+  <div class="prog-card">
+    <div class="prog-title">RIR targets</div>
+    <div class="prog-body">Compounds: finish at 1–2 RIR (could do 1–2 more reps if forced). Isolations: 0–1 RIR — go close to failure. This protects your CNS on top of Hyrox and Crossfit volume.</div>
+  </div>
+  <div class="prog-card">
+    <div class="prog-title">Deload every 6–8 weeks</div>
+    <div class="prog-body">Drop to 50% of working weight, same rep ranges, for one full week. Non-negotiable at 5 sessions/week. This is when adaptation happens, not during hard training weeks.</div>
+  </div>
+  <div class="prog-card">
+    <div class="prog-title">Body comp check-in</div>
+    <div class="prog-body">Weigh daily, use a 7-day rolling average. Dropping more than 0.8kg/week → add 150 kcal (muscle loss risk). Not moving after 2 weeks → drop 100 kcal. Your 2,200–2,400 kcal range is well-calibrated for body recomp.</div>
+  </div>
+</div>
+
+<!-- ===== WORKOUTS ===== -->
+<div id="page-workouts" class="page">
+  <p class="page-title">Hypertrophy<br><span class="c-accent">workouts</span></p>
+  <p class="page-sub">PPL format · double progression · 178g protein/day</p>
+
+  <div class="session-tabs">
+    <button class="session-tab tab-legs active" onclick="showSession('wo','legs',this)">Legs</button>
+    <button class="session-tab tab-push" onclick="showSession('wo','push',this)">Push</button>
+    <button class="session-tab tab-pull" onclick="showSession('wo','pull',this)">Pull</button>
+  </div>
+
+  <div id="wo-legs" class="session-panel active">
+    <div class="phase-div"><span>Compound</span></div>
+    <div class="ex-row"><div><div class="ex-name">Barbell back squat</div><div class="ex-cue">Depth to parallel or below — brace hard. Primary quad and glute driver</div></div><div class="badge badge-sets">4 sets</div><div class="badge badge-reps">6–8</div></div>
+    <div class="ex-row"><div><div class="ex-name">Romanian deadlift</div><div class="ex-cue">Hip hinge — feel the hamstring stretch. Control the eccentric</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">8–10</div></div>
+    <div class="ex-row"><div><div class="ex-name">Bulgarian split squat</div><div class="ex-cue">Rear foot elevated — great quad + glute balance work, addresses asymmetries</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">10–12 each</div></div>
+    <div class="phase-div"><span>Isolation</span></div>
+    <div class="ex-row"><div><div class="ex-name">Leg press</div><div class="ex-cue">High foot placement for glute emphasis — full ROM, don't lock out at the top</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Lying leg curl</div><div class="ex-cue">Full ROM — no momentum, pause at peak contraction</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Hip thrust</div><div class="ex-cue">Barbell or machine — squeeze for 1 full second at the top</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Standing calf raise</div><div class="ex-cue">3-second eccentric — slow down builds more mass than fast reps</div></div><div class="badge badge-sets">4 sets</div><div class="badge badge-reps">15–20</div></div>
+    <div class="totals-bar"><span class="totals-label">Rest: 2–3 min compounds · 90s isolations</span><span class="totals-val">23 sets total</span></div>
+  </div>
+
+  <div id="wo-push" class="session-panel">
+    <div class="phase-div"><span>Compound</span></div>
+    <div class="ex-row"><div><div class="ex-name">Flat barbell bench press</div><div class="ex-cue">Primary chest driver — control the eccentric, feet flat, shoulder blades retracted</div></div><div class="badge badge-sets">4 sets</div><div class="badge badge-reps">6–8</div></div>
+    <div class="ex-row"><div><div class="ex-name">Overhead press</div><div class="ex-cue">Barbell or DB, seated or standing — no excessive forward lean, core braced</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">8–10</div></div>
+    <div class="ex-row"><div><div class="ex-name">Incline dumbbell press</div><div class="ex-cue">30–45° — upper chest emphasis, full stretch at the bottom</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">10–12</div></div>
+    <div class="phase-div"><span>Isolation</span></div>
+    <div class="ex-row"><div><div class="ex-name">Cable lateral raise</div><div class="ex-cue">Single arm — cable keeps tension at the top unlike dumbbells</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Cable fly (low to high)</div><div class="ex-cue">Pec stretch at full extension — prioritise the stretch, not the squeeze</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Overhead tricep extension</div><div class="ex-cue">Cable — long head stretch, elbows stay fixed throughout</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Tricep pushdown (rope)</div><div class="ex-cue">Flare hands at the bottom for full lateral head contraction</div></div><div class="badge badge-sets">2 sets</div><div class="badge badge-reps">15</div></div>
+    <div class="totals-bar"><span class="totals-label">Rest: 90–120s compounds · 60s isolations</span><span class="totals-val">21 sets total</span></div>
+  </div>
+
+  <div id="wo-pull" class="session-panel">
+    <div class="phase-div"><span>Compound</span></div>
+    <div class="ex-row"><div><div class="ex-name">Weighted pull-up or lat pulldown</div><div class="ex-cue">Full dead hang to chin-over-bar — initiate with lats, not biceps</div></div><div class="badge badge-sets">4 sets</div><div class="badge badge-reps">6–8</div></div>
+    <div class="ex-row"><div><div class="ex-name">Barbell or DB row</div><div class="ex-cue">Chest-supported DB row if lower back is taxed from Hyrox — no ego</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">8–10</div></div>
+    <div class="ex-row"><div><div class="ex-name">Cable seated row (neutral grip)</div><div class="ex-cue">Drive elbows back — pause at peak contraction for 1 second</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">10–12</div></div>
+    <div class="phase-div"><span>Isolation</span></div>
+    <div class="ex-row"><div><div class="ex-name">Face pull (rope, high cable)</div><div class="ex-cue">External rotation at the end — rear delt and rotator cuff health</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">15–20</div></div>
+    <div class="ex-row"><div><div class="ex-name">Straight-arm pulldown</div><div class="ex-cue">Arms stay straight — pure lat isolation, great for mind-muscle connection</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">12–15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Incline dumbbell curl</div><div class="ex-cue">Long head emphasis — full stretch at the bottom, no swinging</div></div><div class="badge badge-sets">3 sets</div><div class="badge badge-reps">10–12</div></div>
+    <div class="ex-row"><div><div class="ex-name">Hammer curl</div><div class="ex-cue">Brachialis + brachioradialis — adds arm thickness beyond just bicep peak</div></div><div class="badge badge-sets">2 sets</div><div class="badge badge-reps">12</div></div>
+    <div class="totals-bar"><span class="totals-label">Rest: 90–120s compounds · 60s isolations</span><span class="totals-val">21 sets total</span></div>
+  </div>
+</div>
+
+<!-- ===== WARM-UPS ===== -->
+<div id="page-warmups" class="page">
+  <p class="page-title">Warm-up<br><span class="c-accent">protocols</span></p>
+  <p class="page-sub">Tissue prep · mobility · neural activation · ramp-up sets</p>
+
+  <div class="session-tabs">
+    <button class="session-tab tab-legs active" onclick="showSession('wu','legs',this)">Legs</button>
+    <button class="session-tab tab-push" onclick="showSession('wu','push',this)">Push</button>
+    <button class="session-tab tab-pull" onclick="showSession('wu','pull',this)">Pull</button>
+    <button class="session-tab tab-hyrox" onclick="showSession('wu','hyrox',this)">Hyrox</button>
+  </div>
+
+  <div id="wu-legs" class="session-panel active">
+    <div class="phase-div"><span>Phase 1 — tissue warm-up</span></div>
+    <div class="ex-row"><div><div class="ex-name">Assault bike or row</div><div class="ex-cue">Easy pace — elevate heart rate and get blood into hips and knees. Don't go hard</div></div><div class="badge badge-time">3 min</div></div>
+    <div class="phase-div"><span>Phase 2 — hip and ankle mobility</span></div>
+    <div class="ex-row"><div><div class="ex-name">Deep squat hold with thoracic rotation</div><div class="ex-cue">Heels down, rotate through the spine — one hand on floor, other reaching to ceiling</div></div><div class="badge badge-each">5 each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">90/90 hip stretch</div><div class="ex-cue">Front leg at 90°, rear leg at 90° — opens internal and external hip rotation</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Ankle circles + calf raises</div><div class="ex-cue">10 slow circles each direction, then 15 raises — prepares ankle dorsiflexion for squat depth</div></div><div class="badge badge-reps">10 + 15</div></div>
+    <div class="phase-div"><span>Phase 3 — glute and hamstring activation</span></div>
+    <div class="ex-row"><div><div class="ex-name">Glute bridge with 2s hold</div><div class="ex-cue">Drive through heels, squeeze hard at the top — wakes up glutes before squats</div></div><div class="badge badge-reps">15 reps</div></div>
+    <div class="ex-row"><div><div class="ex-name">Banded clamshell</div><div class="ex-cue">Light band above knees — abductor activation to protect knees during the squat</div></div><div class="badge badge-each">15 each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Leg swing (front-to-back + lateral)</div><div class="ex-cue">Hold something for balance — dynamic hamstring and hip flexor prep</div></div><div class="badge badge-reps">10 each direction</div></div>
+    <div class="phase-div"><span>Phase 4 — ramp-up sets</span></div>
+    <div class="ex-row"><div><div class="ex-name">Empty bar × 10</div><div class="ex-cue">Focus on bracing, depth, and foot pressure — not speed. Groove the pattern</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="ex-row"><div><div class="ex-name">50% working weight × 6</div><div class="ex-cue">Still controlled — feel the movement, not a workout</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="ex-row"><div><div class="ex-name">75% working weight × 3</div><div class="ex-cue">Last check before work sets — should feel smooth and fast off the floor</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="totals-bar"><span class="totals-label">Total warm-up</span><span class="totals-val">~12–14 min</span></div>
+  </div>
+
+  <div id="wu-push" class="session-panel">
+    <div class="phase-div"><span>Phase 1 — tissue warm-up</span></div>
+    <div class="ex-row"><div><div class="ex-name">Arm circles + cross-body swings</div><div class="ex-cue">Large slow circles forward and back, then horizontal swings — gets synovial fluid moving in the shoulder</div></div><div class="badge badge-time">2 min</div></div>
+    <div class="phase-div"><span>Phase 2 — shoulder and rotator cuff prep</span></div>
+    <div class="ex-row"><div><div class="ex-name">Band pull-apart</div><div class="ex-cue">Light resistance band — pull to chest height, squeeze rear delts at full extension. Non-negotiable before pressing</div></div><div class="badge badge-reps">3 × 15</div></div>
+    <div class="ex-row"><div><div class="ex-name">External rotation (band or light DB)</div><div class="ex-cue">Elbow fixed at 90°, rotate out — rotator cuff activation protects the joint under load</div></div><div class="badge badge-each">2 × 12 each</div></div>
+    <div class="ex-row"><div><div class="ex-name">Thoracic extension over foam roller</div><div class="ex-cue">Roller at mid-back, hands behind head, extend gently — opens up the pressing position</div></div><div class="badge badge-time">60s</div></div>
+    <div class="phase-div"><span>Phase 3 — scapular control</span></div>
+    <div class="ex-row"><div><div class="ex-name">Scapular push-up</div><div class="ex-cue">Arms straight — protract and retract shoulder blades only. Teaches scapular movement for a safe bench</div></div><div class="badge badge-reps">10 reps</div></div>
+    <div class="ex-row"><div><div class="ex-name">Push-up (slow eccentric)</div><div class="ex-cue">3 seconds down — primes pecs and triceps without fatiguing them</div></div><div class="badge badge-reps">8 reps</div></div>
+    <div class="phase-div"><span>Phase 4 — ramp-up sets</span></div>
+    <div class="ex-row"><div><div class="ex-name">Empty bar × 10</div><div class="ex-cue">Setup: feet flat, slight arch, shoulder blades retracted and depressed into the bench</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="ex-row"><div><div class="ex-name">50% working weight × 6</div><div class="ex-cue">Controlled — feel bar path and elbow position</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="ex-row"><div><div class="ex-name">75% working weight × 3</div><div class="ex-cue">Should feel snappy — if it doesn't, shoulders need more prep</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="totals-bar"><span class="totals-label">Total warm-up</span><span class="totals-val">~10–12 min</span></div>
+    <div class="tip">The band pull-apart is the most important item here. It's the difference between healthy shoulders long-term and impingement from repeated pressing. Never skip it.</div>
+  </div>
+
+  <div id="wu-pull" class="session-panel">
+    <div class="phase-div"><span>Phase 1 — tissue warm-up</span></div>
+    <div class="ex-row"><div><div class="ex-name">Passive dead hang</div><div class="ex-cue">Shoulders fully elevated — decompresses the spine and stretches the lats before loading them</div></div><div class="badge badge-time">3 × 20s</div></div>
+    <div class="phase-div"><span>Phase 2 — shoulder and upper back prep</span></div>
+    <div class="ex-row"><div><div class="ex-name">Band pull-apart</div><div class="ex-cue">Rear delt and rotator cuff warm-up applies equally to pulling movements</div></div><div class="badge badge-reps">2 × 15</div></div>
+    <div class="ex-row"><div><div class="ex-name">Cat-cow</div><div class="ex-cue">Slow, deliberate thoracic flexion and extension — warms up the spine before rowing</div></div><div class="badge badge-reps">10 cycles</div></div>
+    <div class="ex-row"><div><div class="ex-name">Face pull with light band</div><div class="ex-cue">High anchor, pull to forehead with external rotation — direct rear delt activation</div></div><div class="badge badge-reps">2 × 15</div></div>
+    <div class="phase-div"><span>Phase 3 — scapular activation</span></div>
+    <div class="ex-row"><div><div class="ex-name">Scapular pull-up</div><div class="ex-cue">Dead hang, then depress and retract shoulder blades only — no elbow bend. Teaches lat engagement before the full pull</div></div><div class="badge badge-reps">2 × 8</div></div>
+    <div class="phase-div"><span>Phase 4 — ramp-up sets</span></div>
+    <div class="ex-row"><div><div class="ex-name">Assisted pull-up or 50% lat pulldown × 8</div><div class="ex-cue">Initiate with the lats — elbow drives down and back, not the biceps</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="ex-row"><div><div class="ex-name">75% working weight × 4</div><div class="ex-cue">Full ROM — dead hang at the bottom, chin over bar at the top</div></div><div class="badge badge-sets">1 set</div></div>
+    <div class="totals-bar"><span class="totals-label">Total warm-up</span><span class="totals-val">~10–12 min</span></div>
+    <div class="tip">The dead hang is underrated — 60 seconds of passive hanging does more for shoulder health than most active exercises. Make it a habit on Pull days and you'll feel the difference within a few weeks.</div>
+  </div>
+
+  <div id="wu-hyrox" class="session-panel">
+    <div class="hyrox-note">Hyrox demands 8 different movement patterns at sustained intensity. This warm-up is longer by design — don't cut it short.</div>
+    <div class="phase-div"><span>Phase 1 — cardiovascular primer</span></div>
+    <div class="ex-row"><div><div class="ex-name">Easy run or row</div><div class="ex-cue">Conversational pace — raises core temp before any intensity. Don't go hard here, you'll need it later</div></div><div class="badge badge-time">5 min</div></div>
+    <div class="phase-div"><span>Phase 2 — full body mobility</span></div>
+    <div class="ex-row"><div><div class="ex-name">World's greatest stretch</div><div class="ex-cue">Lunge forward, plant same-side hand, rotate opposite arm to ceiling — hip flexor, thoracic spine, and hamstring in one move</div></div><div class="badge badge-each">5 each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Inchworm with push-up</div><div class="ex-cue">Walk hands to plank, one push-up, walk back — full chain activation</div></div><div class="badge badge-reps">6 reps</div></div>
+    <div class="ex-row"><div><div class="ex-name">Hip circle + leg swing</div><div class="ex-cue">Opens hips for lunges and sled pushes — the two movements that break down most when hips are cold</div></div><div class="badge badge-reps">10 each direction</div></div>
+    <div class="phase-div"><span>Phase 3 — station-specific activation</span></div>
+    <div class="ex-row"><div><div class="ex-name">Walking lunge with trunk rotation</div><div class="ex-cue">Mirrors sled push posture — forward lean, core braced, drive through rear leg</div></div><div class="badge badge-each">10 each leg</div></div>
+    <div class="ex-row"><div><div class="ex-name">Banded pull-down (ski erg prep)</div><div class="ex-cue">Light band overhead, pull down explosively — primes the lat and shoulder pattern for the ski erg</div></div><div class="badge badge-reps">12 reps</div></div>
+    <div class="ex-row"><div><div class="ex-name">Burpee broad jump × 3</div><div class="ex-cue">At 60% effort — wakes up the nervous system for explosive output without burning matches early</div></div><div class="badge badge-reps">3 reps</div></div>
+    <div class="phase-div"><span>Phase 4 — running strides</span></div>
+    <div class="ex-row"><div><div class="ex-name">Build-up strides × 3</div><div class="ex-cue">~80m each — start at 60%, build to 85% of race pace. Primes running economy before the first lap</div></div><div class="badge badge-reps">3 × 80m</div></div>
+    <div class="totals-bar"><span class="totals-label">Total warm-up</span><span class="totals-val">~15 min</span></div>
+  </div>
+</div>
+
+<!-- ===== COOL-DOWNS ===== -->
+<div id="page-cooldowns" class="page">
+  <p class="page-title">Cool-down<br><span class="c-accent">protocols</span></p>
+  <p class="page-sub">Active recovery · mobility · nervous system reset</p>
+
+  <div class="session-tabs">
+    <button class="session-tab tab-legs active" onclick="showSession('cd','legs',this)">Legs</button>
+    <button class="session-tab tab-push" onclick="showSession('cd','push',this)">Push</button>
+    <button class="session-tab tab-pull" onclick="showSession('cd','pull',this)">Pull</button>
+    <button class="session-tab tab-hyrox" onclick="showSession('cd','hyrox',this)">Hyrox</button>
+  </div>
+
+  <div id="cd-legs" class="session-panel active">
+    <div class="phase-div"><span>Phase 1 — heart rate come-down</span></div>
+    <div class="ex-row"><div><div class="ex-name">Slow walk or light bike</div><div class="ex-cue">Don't sit down after heavy squats — keep blood circulating to clear lactate from quads and hamstrings</div></div><div class="badge badge-time">3 min</div></div>
+    <div class="phase-div"><span>Phase 2 — hip flexor and quad stretch</span></div>
+    <div class="ex-row"><div><div class="ex-name">Kneeling hip flexor stretch</div><div class="ex-cue">Back knee down, drive hips forward — hip flexors get heavily compressed under squat load and need direct lengthening</div></div><div class="badge badge-each">60s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Standing quad stretch</div><div class="ex-cue">Pull heel to glute, keep knees together — hold at end range, don't bounce</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Pigeon pose or figure-4</div><div class="ex-cue">External hip rotation release — essential after Bulgarians and hip thrusts compress the glute</div></div><div class="badge badge-each">90s each side</div></div>
+    <div class="phase-div"><span>Phase 3 — hamstring and calf lengthening</span></div>
+    <div class="ex-row"><div><div class="ex-name">Seated forward fold</div><div class="ex-cue">Legs straight, hinge from hips — RDLs leave hamstrings shortened; this reverses that</div></div><div class="badge badge-time">60s</div></div>
+    <div class="ex-row"><div><div class="ex-name">Downward dog calf pedal</div><div class="ex-cue">Alternate pressing each heel to the floor — calves take a beating and deserve direct attention</div></div><div class="badge badge-time">60s</div></div>
+    <div class="phase-div"><span>Phase 4 — nervous system reset</span></div>
+    <div class="ex-row"><div><div class="ex-name">Legs up the wall</div><div class="ex-cue">Back flat, legs resting vertically — promotes venous return from legs, reduces post-squat swelling</div></div><div class="badge badge-time">2 min</div></div>
+    <div class="totals-bar"><span class="totals-label">Total cool-down</span><span class="totals-val">~12 min</span></div>
+    <div class="tip">Legs is your hardest session. The pigeon pose and legs-up-the-wall do the most work here — they directly affect how you feel going into Tuesday's Push. Don't rush them.</div>
+  </div>
+
+  <div id="cd-push" class="session-panel">
+    <div class="phase-div"><span>Phase 1 — shoulder decompression</span></div>
+    <div class="ex-row"><div><div class="ex-name">Passive dead hang</div><div class="ex-cue">Let the shoulder girdle fully relax — counteracts compression from pressing. 30–40 seconds makes a meaningful difference</div></div><div class="badge badge-time">3 × 20s</div></div>
+    <div class="ex-row"><div><div class="ex-name">Cross-body shoulder stretch</div><div class="ex-cue">Pull arm across chest with opposite hand — posterior capsule stretch, often tight after heavy bench</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="phase-div"><span>Phase 2 — chest and anterior shoulder opening</span></div>
+    <div class="ex-row"><div><div class="ex-name">Doorway chest stretch</div><div class="ex-cue">Forearms on frame at 90°, lean through — lengthens pec major and minor which shorten under pressing volume</div></div><div class="badge badge-time">60s</div></div>
+    <div class="ex-row"><div><div class="ex-name">Thread the needle</div><div class="ex-cue">On all fours, thread one arm under the body and rotate — thoracic rotation release after pressing</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Overhead tricep stretch</div><div class="ex-cue">Arm overhead, elbow bent, pull gently — triceps get heavily loaded on push day</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="phase-div"><span>Phase 3 — thoracic mobility</span></div>
+    <div class="ex-row"><div><div class="ex-name">Foam roller thoracic extension</div><div class="ex-cue">Slow rolls along mid and upper back — restores extension range that pressing repeatedly reduces</div></div><div class="badge badge-time">2 min</div></div>
+    <div class="totals-bar"><span class="totals-label">Total cool-down</span><span class="totals-val">~10 min</span></div>
+    <div class="tip">The dead hang post-Push is the single most important move here. After heavy overhead and bench pressing, the shoulder capsule has been under load for 45+ minutes — passive hanging resets it in under a minute.</div>
+  </div>
+
+  <div id="cd-pull" class="session-panel">
+    <div class="phase-div"><span>Phase 1 — lat and upper back release</span></div>
+    <div class="ex-row"><div><div class="ex-name">Child's pose with arm reach</div><div class="ex-cue">Sit back onto heels, reach arms forward along the floor — direct lat lengthening after heavy pull-ups and rows</div></div><div class="badge badge-time">90s</div></div>
+    <div class="ex-row"><div><div class="ex-name">Lat stretch at rack</div><div class="ex-cue">Hold the upright at shoulder height, hinge back — more targeted than child's pose alone</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Upper trap stretch</div><div class="ex-cue">Pull head to one side gently — traps work hard on rows and accumulate tension quickly</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="phase-div"><span>Phase 2 — bicep and forearm lengthening</span></div>
+    <div class="ex-row"><div><div class="ex-name">Wrist extension stretch</div><div class="ex-cue">Arm straight, palm up, pull fingers back gently — forearm flexors and bicep tendon compressed under curl volume</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Wall bicep stretch</div><div class="ex-cue">Palm flat on wall behind at shoulder height, rotate body away — full bicep lengthening at both attachments</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="phase-div"><span>Phase 3 — spinal decompression</span></div>
+    <div class="ex-row"><div><div class="ex-name">Passive dead hang</div><div class="ex-cue">End every Pull session here — rows and pull-ups compress the lumbar spine. 60s of hanging fully decompresses it before you leave</div></div><div class="badge badge-time">2 × 30s</div></div>
+    <div class="totals-bar"><span class="totals-label">Total cool-down</span><span class="totals-val">~10 min</span></div>
+    <div class="tip">Pull day is the easiest cool-down to rush because you don't feel wrecked. The lat and trap tension builds quietly over weeks — this is long-term maintenance work, not just post-session relief.</div>
+  </div>
+
+  <div id="cd-hyrox" class="session-panel">
+    <div class="phase-div"><span>Phase 1 — active recovery walk</span></div>
+    <div class="ex-row"><div><div class="ex-name">Easy walk</div><div class="ex-cue">Mandatory — going from race pace to sitting still spikes DOMS significantly. Keep moving until HR is below 100 bpm</div></div><div class="badge badge-time">5 min</div></div>
+    <div class="phase-div"><span>Phase 2 — full body mobility flush</span></div>
+    <div class="ex-row"><div><div class="ex-name">Kneeling hip flexor stretch</div><div class="ex-cue">Priority after running and lunges — hip flexors are the most consistently overworked structure in Hyrox</div></div><div class="badge badge-each">90s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Standing hamstring stretch</div><div class="ex-cue">Foot on a low surface, hinge forward — running volume leaves hamstrings shortened and prone to next-day tightness</div></div><div class="badge badge-each">60s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Lat stretch at rig</div><div class="ex-cue">Ski erg and rowing station place sustained load through the lats — same treatment as Pull day</div></div><div class="badge badge-each">45s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Pigeon pose</div><div class="ex-cue">Sled push and lunges compress the glute medius and piriformis hard — non-negotiable post-Hyrox</div></div><div class="badge badge-each">90s each side</div></div>
+    <div class="ex-row"><div><div class="ex-name">Child's pose</div><div class="ex-cue">Full spinal decompression and lat release — hold and breathe deeply, let the nervous system come down</div></div><div class="badge badge-time">2 min</div></div>
+    <div class="phase-div"><span>Phase 3 — nutrition window</span></div>
+    <div class="ex-row"><div><div class="ex-name">Whey + fast carbs</div><div class="ex-cue">Most important post-workout window of the week. 40g whey + 50–60g fast carbs (banana, rice cakes). Glycogen fully depleted after Hyrox — this window matters more than any other session</div></div><div class="badge badge-time">Within 30 min</div></div>
+    <div class="totals-bar"><span class="totals-label">Total cool-down</span><span class="totals-val">~15 min</span></div>
+    <div class="tip">Hyrox demands the longest cool-down — you've loaded nearly every movement pattern at once. Friday evening is a recovery protocol in itself: cool-down → nutrition → hydration → sleep by 22:00 if possible.</div>
+  </div>
+</div>
+
+<!-- ===== RECOVERY ===== -->
+<div id="page-recovery" class="page">
+  <p class="page-title">Recovery<br><span class="c-accent">framework</span></p>
+  <p class="page-sub">Sleep · nutrition · tools · weekly rhythm</p>
+
+  <div class="section-label">Daily non-negotiables</div>
+  <div class="rec-card" style="margin-bottom:10px">
+    <div class="rec-title">🌙 Sleep <span class="priority p-high">highest priority</span></div>
+    <div class="rec-body">7.5–9 hours. More than any supplement or protocol — sleep is where muscle protein synthesis peaks, cortisol resets, and fat oxidation runs. At 5 sessions/week, sub-7 hours will visibly stall body composition progress within 2–3 weeks.</div>
+  </div>
+  <div class="rec-card" style="margin-bottom:24px">
+    <div class="rec-title">💧 Hydration <span class="priority p-high">highest priority</span></div>
+    <div class="rec-body">Your existing hydration framework applies. On Hyrox and Crossfit days add 500–750ml beyond your baseline — sweat losses are significantly higher than PPL weight training alone.</div>
+  </div>
+
+  <div class="section-label">Saturday — active recovery (post-Hyrox)</div>
+  <div class="rec-card" style="margin-bottom:10px">
+    <div class="rec-title">🚶 Low-intensity movement <span class="priority p-med">recommended</span></div>
+    <div class="rec-body">20–30 min easy walk outdoors. Gentle movement increases blood flow to sore tissue and clears inflammatory markers faster than complete rest. No intensity, no targets, no HR zone.</div>
+  </div>
+  <div class="rec-card" style="margin-bottom:24px">
+    <div class="rec-title">🧘 Extended mobility session <span class="priority p-med">recommended</span></div>
+    <div class="rec-body">10–15 min on wherever you feel tightest — usually hips, hamstrings, and upper back after Hyrox. One day per week to do longer holds (2–3 min) rather than the 45–90s used in cool-downs.</div>
+  </div>
+
+  <div class="section-label">Sunday — full rest + batch prep</div>
+  <div class="rec-card" style="margin-bottom:24px">
+    <div class="rec-title">🍳 Batch cook session <span class="priority p-high">highest priority</span></div>
+    <div class="rec-body">Preparing food in advance removes decision fatigue on hard training days. When you're tired post-Legs or post-Hyrox, having protein already prepped is what keeps you hitting 178g/day consistently. Chicken, turkey mince, quinoa, overnight oats jars.</div>
+  </div>
+
+  <div class="section-label">Tools and techniques by priority</div>
+  <div class="recovery-grid">
+    <div class="rec-card">
+      <div class="rec-title"><span class="priority p-high" style="margin-right:6px">high</span>Cold shower post-Hyrox</div>
+      <div class="rec-body">2–3 min cold exposure after Friday's session. Reduces systemic inflammation and accelerates recovery. Not after PPL — cold blunts the hypertrophy signal after weight training.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title"><span class="priority p-high" style="margin-right:6px">high</span>Foam rolling</div>
+      <div class="rec-body">5–10 min on training days, focused on muscles just worked. Quads and IT band after Legs, thoracic spine after Push, lats and upper traps after Pull. Slow passes only.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title"><span class="priority p-med" style="margin-right:6px">medium</span>Contrast shower</div>
+      <div class="rec-body">Alternate 1 min hot / 30s cold × 3 cycles, ending cold. Good on Legs and Hyrox days. Drives blood flow in and out of muscle tissue for faster recovery.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title"><span class="priority p-med" style="margin-right:6px">medium</span>Magnesium glycinate</div>
+      <div class="rec-body">300–400mg before bed on training days. Supports muscle relaxation, sleep quality, and reduces nighttime cramping — especially relevant at your training frequency.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title"><span class="priority p-low" style="margin-right:6px">optional</span>Compression gear</div>
+      <div class="rec-body">Compression tights Friday evening and Saturday after Hyrox. Reduces fluid pooling in legs overnight and can meaningfully reduce perceived soreness going into the new week.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title"><span class="priority p-low" style="margin-right:6px">optional</span>Sauna</div>
+      <div class="rec-body">15–20 min at 80–90°C on Saturday if accessible. Heat exposure increases growth hormone and supports cardiovascular adaptation. Rest days only — not immediately post-training.</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottom-nav">
+  <button class="bn-btn active" onclick="showPage('schedule',this,true)">
+    <span class="bn-icon">📅</span><span class="bn-label">Schedule</span>
+  </button>
+  <button class="bn-btn" onclick="showPage('workouts',this,true)">
+    <span class="bn-icon">💪</span><span class="bn-label">Workouts</span>
+  </button>
+  <button class="bn-btn" onclick="showPage('warmups',this,true)">
+    <span class="bn-icon">🔥</span><span class="bn-label">Warm-up</span>
+  </button>
+  <button class="bn-btn" onclick="showPage('cooldowns',this,true)">
+    <span class="bn-icon">❄️</span><span class="bn-label">Cool-down</span>
+  </button>
+  <button class="bn-btn" onclick="showPage('recovery',this,true)">
+    <span class="bn-icon">🌙</span><span class="bn-label">Recovery</span>
+  </button>
+</nav>
+
+<script>
+function showPage(id, btn, isBottom) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (isBottom) {
+    document.querySelectorAll('.bn-btn').forEach(b => b.classList.remove('active'));
+  } else {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  }
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showSession(prefix, id, btn) {
+  const panel = btn.closest('.page') || document.body;
+  panel.querySelectorAll('[id^="' + prefix + '-"]').forEach(p => p.classList.remove('active'));
+  document.getElementById(prefix + '-' + id).classList.add('active');
+  btn.closest('.session-tabs').querySelectorAll('.session-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
