@@ -41,9 +41,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* BOTTOM NAV */
 #bottom-nav{
   flex-shrink:0;display:flex;align-items:stretch;
-  background:rgba(14,15,13,0.97);border-top:1px solid var(--border);
-  padding-bottom:var(--sab);height:calc(var(--tab-h) + var(--sab));
+  background:rgba(14,15,13,0.97);border-bottom:1px solid var(--border);
+  height:var(--tab-h);
   position:relative;z-index:100;
+  order:-1;
 }
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;border:none;background:none;padding:8px 2px;min-width:0;-webkit-user-select:none;user-select:none;}
 .bn:active{opacity:.6;}
@@ -53,7 +54,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .bn.active .bn-icon{transform:translateY(-2px);}
 
 /* PAGES */
-.page{display:none;padding:16px 16px 32px;max-width:680px;margin:0 auto;}
+.page{display:none;padding:16px 16px 48px;max-width:680px;margin:0 auto;}
 .page.active{display:block;}
 
 /* TYPE */
@@ -164,6 +165,24 @@ canvas{width:100%!important;height:140px!important;}
 </head>
 <body>
 <div id="app">
+<!-- TOP NAV -->
+<div id="bottom-nav">
+  <button class="bn active" id="bn-schedule" ontouchend="nav(event,'schedule')">
+    <span class="bn-icon">📅</span><span class="bn-label" data-t="nav.schedule"></span>
+  </button>
+  <button class="bn" id="bn-workouts" ontouchend="nav(event,'workouts')">
+    <span class="bn-icon">💪</span><span class="bn-label" data-t="nav.workouts"></span>
+  </button>
+  <button class="bn" id="bn-warmups" ontouchend="nav(event,'warmups')">
+    <span class="bn-icon">🔥</span><span class="bn-label" data-t="nav.warmups"></span>
+  </button>
+  <button class="bn" id="bn-cooldowns" ontouchend="nav(event,'cooldowns')">
+    <span class="bn-icon">❄️</span><span class="bn-label" data-t="nav.cooldowns"></span>
+  </button>
+  <button class="bn" id="bn-progress" ontouchend="nav(event,'progress')">
+    <span class="bn-icon">📈</span><span class="bn-label" data-t="nav.progress"></span>
+  </button>
+</div>
 <div id="content">
 
 <!-- LANG BANNER -->
@@ -270,25 +289,6 @@ canvas{width:100%!important;height:140px!important;}
 </div>
 
 </div><!-- content -->
-
-<!-- BOTTOM NAV -->
-<div id="bottom-nav">
-  <button class="bn active" id="bn-schedule" ontouchend="nav(event,'schedule')">
-    <span class="bn-icon">📅</span><span class="bn-label" data-t="nav.schedule"></span>
-  </button>
-  <button class="bn" id="bn-workouts" ontouchend="nav(event,'workouts')">
-    <span class="bn-icon">💪</span><span class="bn-label" data-t="nav.workouts"></span>
-  </button>
-  <button class="bn" id="bn-warmups" ontouchend="nav(event,'warmups')">
-    <span class="bn-icon">🔥</span><span class="bn-label" data-t="nav.warmups"></span>
-  </button>
-  <button class="bn" id="bn-cooldowns" ontouchend="nav(event,'cooldowns')">
-    <span class="bn-icon">❄️</span><span class="bn-label" data-t="nav.cooldowns"></span>
-  </button>
-  <button class="bn" id="bn-progress" ontouchend="nav(event,'progress')">
-    <span class="bn-icon">📈</span><span class="bn-label" data-t="nav.progress"></span>
-  </button>
-</div>
 </div><!-- app -->
 
 <script>
