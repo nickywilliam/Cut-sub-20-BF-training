@@ -212,13 +212,15 @@ canvas{width:100%!important;height:140px!important;}
   <p class="page-title" data-t="wo.title"></p>
   <p class="page-sub" data-t="wo.sub"></p>
   <div class="stabs">
-    <button class="stab legs active" ontouchend="stab(event,'wo','legs','legs')" data-t="tab.legs"></button>
-    <button class="stab push" ontouchend="stab(event,'wo','push','push')">Push</button>
+    <button class="stab push active" ontouchend="stab(event,'wo','push','push')">Push</button>
     <button class="stab pull" ontouchend="stab(event,'wo','pull','pull')">Pull</button>
+    <button class="stab legs" ontouchend="stab(event,'wo','legs','legs')" data-t="tab.legs"></button>
+    <button class="stab hyrox" ontouchend="stab(event,'wo','cardio','hyrox')" data-t="tab.cardio"></button>
   </div>
-  <div id="wo-legs" class="spanel active"></div>
-  <div id="wo-push" class="spanel"></div>
+  <div id="wo-push" class="spanel active"></div>
   <div id="wo-pull" class="spanel"></div>
+  <div id="wo-legs" class="spanel"></div>
+  <div id="wo-cardio" class="spanel"></div>
 </div>
 
 <!-- ===== WARMUPS ===== -->
@@ -309,7 +311,7 @@ fr: {
   "prog.title": "Suivi des progrès", "prog.sub": "Loguer tes charges · voir ta progression",
   "nav.schedule": "Planning", "nav.workouts": "Séances", "nav.warmups": "Échauff.",
   "nav.cooldowns": "Retour", "nav.progress": "Progrès",
-  "tab.legs": "Jambes", "tab.push": "Push", "tab.pull": "Pull", "tab.hyrox": "Hyrox",
+  "tab.legs": "Jambes", "tab.push": "Push", "tab.pull": "Pull", "tab.hyrox": "Hyrox", "tab.cardio": "Cardio+Abs",
   "prog.session": "Séance", "prog.exercise": "Exercice", "prog.sets": "Séries",
   "prog.reps": "Reps", "prog.weight": "Charge (kg)", "prog.history": "Historique",
   "btn.add": "+ Ajouter la série", "btn.clear": "Tout effacer",
@@ -325,9 +327,9 @@ fr: {
   "rest.compound": "Repos : 2–3 min polya · 90s isolation",
   "rest.upper": "Repos : 90–120s polya · 60s isolation",
   "days": ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"],
-  "day.tags": ["Jambes","Push","Crossfit","Pull","Hyrox","Repos","Repos"],
-  "day.subs": ["Quads · Hams · Fessiers","Pec · Épaules · Tris","Réduire pressing","Dos · Delts arr · Bis","4j de récup jambes","Récup active","Batch cook"],
-  "flow.labels": ["Jambes Lun","Push Mar","CF Mer","Pull Jeu","Hyrox Ven"],
+  "day.tags": ["Push","Crossfit","Pull","Cardio+Abs","Hyrox","Football","Jambes"],
+  "day.subs": ["Pec · Épaules · Tris","Réduire pressing","Dos · Delts arr · Bis","Stairmaster + Circuit","Frais — 3j de récup jambes","⚽ 7v7 récup active","Quads · Hams · Fessiers"],
+  "flow.labels": ["Push Lun","CF Mar","Pull Mer","Cardio Jeu","Hyrox Ven"],
   "warn.hyrox.wu": "Hyrox : même en express, ne pas sauter l'échauffement — 8 patterns à haute intensité.",
   "warn.hyrox.cd": "Post-Hyrox : même en express, la marche active est obligatoire.",
   "dur.express.legs.wu": "~5 min", "dur.full.legs.wu": "~12–14 min",
@@ -353,7 +355,7 @@ en: {
   "prog.title": "Progress tracking", "prog.sub": "Log your lifts · visualise progress",
   "nav.schedule": "Schedule", "nav.workouts": "Workouts", "nav.warmups": "Warm-up",
   "nav.cooldowns": "Cool-down", "nav.progress": "Progress",
-  "tab.legs": "Legs", "tab.push": "Push", "tab.pull": "Pull", "tab.hyrox": "Hyrox",
+  "tab.legs": "Legs", "tab.push": "Push", "tab.pull": "Pull", "tab.hyrox": "Hyrox", "tab.cardio": "Cardio+Abs",
   "prog.session": "Session", "prog.exercise": "Exercise", "prog.sets": "Sets",
   "prog.reps": "Reps", "prog.weight": "Load (kg)", "prog.history": "History",
   "btn.add": "+ Log set", "btn.clear": "Clear all",
@@ -369,9 +371,9 @@ en: {
   "rest.compound": "Rest: 2–3 min compounds · 90s isolation",
   "rest.upper": "Rest: 90–120s compounds · 60s isolation",
   "days": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-  "day.tags": ["Legs","Push","Crossfit","Pull","Hyrox","Rest","Rest"],
-  "day.subs": ["Quads · Hams · Glutes","Chest · Shoulders · Tris","Scale pressing","Back · Rear delts · Bis","4 days leg recovery","Active recovery","Batch cook"],
-  "flow.labels": ["Legs Mon","Push Tue","CF Wed","Pull Thu","Hyrox Fri"],
+  "day.tags": ["Push","Crossfit","Pull","Cardio+Abs","Hyrox","Football","Legs"],
+  "day.subs": ["Chest · Shoulders · Tris","Scale pressing","Back · Rear delts · Bis","Stairmaster + Circuit","Fresh — 3 days leg recovery","⚽ 7v7 active recovery","Quads · Hams · Glutes"],
+  "flow.labels": ["Push Mon","CF Tue","Pull Wed","Cardio Thu","Hyrox Fri"],
   "warn.hyrox.wu": "Hyrox: even express, never skip the warm-up — 8 movement patterns at high intensity.",
   "warn.hyrox.cd": "Post-Hyrox: even express, the active walk is mandatory.",
   "dur.express.legs.wu": "~5 min", "dur.full.legs.wu": "~12–14 min",
@@ -867,7 +869,7 @@ const DATA = {
         {prio:"p-lo", ptxt:"optionnel", title:"Vêtements de compression", body:"Collant de compression vendredi soir et samedi après Hyrox. Réduit la stase veineuse et les courbatures en début de semaine."},
         {prio:"p-lo", ptxt:"optionnel", title:"Sauna", body:"15–20 min à 80–90°C le samedi si accessible. Augmente l'hormone de croissance et soutient l'adaptation cardiovasculaire. Jours de repos uniquement."}
       ],
-      labels: {daily:"Non-négociables quotidiens", sat:"Samedi — récup active", sun:"Dimanche — repos + batch cook", tools:"Outils par ordre de priorité"}
+      labels: {daily:"Non-négociables quotidiens", sat:"Samedi — football ⚽", sun:"Dimanche — jambes", tools:"Outils par ordre de priorité"}
     },
     en: {
       daily: [
@@ -887,7 +889,7 @@ const DATA = {
         {prio:"p-lo", ptxt:"optional", title:"Compression gear", body:"Compression tights Friday evening and Saturday after Hyrox. Reduces fluid pooling in legs overnight and can meaningfully reduce perceived soreness going into the new week."},
         {prio:"p-lo", ptxt:"optional", title:"Sauna", body:"15–20 min at 80–90°C on Saturday if accessible. Increases growth hormone and supports cardiovascular adaptation. Rest days only."}
       ],
-      labels: {daily:"Daily non-negotiables", sat:"Saturday — active recovery", sun:"Sunday — full rest + batch cook", tools:"Tools by priority"}
+      labels: {daily:"Daily non-negotiables", sat:"Saturday — football ⚽", sun:"Sunday — legs", tools:"Tools by priority"}
     }
   }
 };
@@ -956,8 +958,8 @@ function renderAll() {
   });
 
   const days=t('days'),tags=t('day.tags'),subs=t('day.subs');
-  const icons=['🦵','💪','🔥','🔙','🏃','🚶','🍳'];
-  const colors=[['--legs','rgba(240,176,96,0.3)','rgba(240,176,96,0.07)'],['--push','rgba(96,180,240,0.3)','rgba(96,180,240,0.07)'],['--cf','rgba(96,224,192,0.3)','rgba(96,224,192,0.07)'],['--pull','rgba(160,108,240,0.3)','rgba(160,108,240,0.07)'],['--hyrox','rgba(240,96,128,0.3)','rgba(240,96,128,0.07)'],['',,''],['',,'']];
+  const icons=['💪','🔥','🔙','🏃‍♂️','🏃','⚽','🦵'];
+  const colors=[['--push','rgba(96,180,240,0.3)','rgba(96,180,240,0.07)'],['--cf','rgba(96,224,192,0.3)','rgba(96,224,192,0.07)'],['--pull','rgba(160,108,240,0.3)','rgba(160,108,240,0.07)'],['--legs','rgba(200,240,96,0.3)','rgba(200,240,96,0.07)'],['--hyrox','rgba(240,96,128,0.3)','rgba(240,96,128,0.07)'],['--cf','rgba(96,224,192,0.3)','rgba(96,224,192,0.07)'],['--legs','rgba(240,176,96,0.3)','rgba(240,176,96,0.07)']];
   document.getElementById('week-grid').innerHTML=days.map((d,i)=>`
     <div class="day-card" style="${colors[i][1]?'border-color:'+colors[i][1]+';background:'+colors[i][2]+';':''}">
       <div class="day-name">${d}</div><span class="day-icon">${icons[i]}</span>
@@ -966,7 +968,7 @@ function renderAll() {
     </div>`).join('');
 
   const flowLabels=t('flow.labels');
-  const fc=[['--legs','rgba(240,176,96,0.3)','rgba(240,176,96,0.08)'],['--push','rgba(96,180,240,0.3)','rgba(96,180,240,0.08)'],['--cf','rgba(96,224,192,0.3)','rgba(96,224,192,0.08)'],['--pull','rgba(160,108,240,0.3)','rgba(160,108,240,0.08)'],['--hyrox','rgba(240,96,128,0.3)','rgba(240,96,128,0.08)']];
+  const fc=[['--push','rgba(96,180,240,0.3)','rgba(96,180,240,0.08)'],['--cf','rgba(96,224,192,0.3)','rgba(96,224,192,0.08)'],['--pull','rgba(160,108,240,0.3)','rgba(160,108,240,0.08)'],['--accent','rgba(200,240,96,0.3)','rgba(200,240,96,0.08)'],['--hyrox','rgba(240,96,128,0.3)','rgba(240,96,128,0.08)']];
   let fr_html='';
   flowLabels.forEach((lbl,i)=>{if(i>0)fr_html+='<span style="color:var(--text3)">→</span>';fr_html+=`<span class="flow-pill" style="color:var(${fc[i][0]});border-color:${fc[i][1]};background:${fc[i][2]}">${lbl}</span>`;});
   document.getElementById('flow-row').innerHTML=fr_html;
@@ -984,6 +986,45 @@ function renderAll() {
       d.iso.map(e=>`<div class="ex-row"><div><div class="ex-name">${e.n}</div><div class="ex-cue">${e.c}</div></div><div class="badge b-sets">${e.s}</div><div class="badge b-reps">${e.r}</div></div>`).join('')+
       `<div class="total-bar"><span>${t(restKey)}</span><span>${sets} ${lang==='fr'?'séries':'sets'}</span></div>`;
   });
+
+  // Cardio+Abs session
+  const cardioData = {
+    fr: {
+      cardio: {label:'Cardio', items:[
+        {n:'Stairmaster', c:'Allure modérée constante — zone 2, tu dois pouvoir parler mais pas chanter', s:'1 session', r:'20–25 min'}
+      ]},
+      circuit: {label:'Circuit abdos — 3 rounds, 30s repos entre exercices', items:[
+        {n:'Dead bug', c:'Dos à plat au sol — bras et jambe opposés s\'étendent lentement. Meilleur exercice anti-extension', s:'3 rounds', r:'10 chaque côté'},
+        {n:'Hollow body hold', c:'Dos pressé au sol, jambes et épaules décollées — si ça lâche, fléchir les genoux', s:'3 rounds', r:'30s'},
+        {n:'Roue abdominale (ou planche)', c:'Depuis les genoux — rouler jusqu\'à ce que les hanches veuillent descendre, revenir. Substitut : planche 40s avec bascule du bassin', s:'3 rounds', r:'8–10'},
+        {n:'Relevé de genoux suspendu', c:'Depuis la barre de traction — genoux vers la poitrine, contrôler la descente. Pas d\'élan', s:'3 rounds', r:'12–15'},
+        {n:'Planche latérale avec dip de hanche', c:'Coude sous l\'épaule — descendre la hanche au sol et remonter. Obliques et core latéral', s:'3 rounds', r:'12 chaque côté'},
+        {n:'Crunch bicycle', c:'Lent et contrôlé — coude vers le genou opposé avec rotation complète. La vitesse tue le stimulus', s:'3 rounds', r:'20 total'}
+      ]},
+      total: {rest:'Repos 60s entre les rounds · pas de repos entre les exercices', time:'~45 min total'}
+    },
+    en: {
+      cardio: {label:'Cardio', items:[
+        {n:'Stairmaster', c:'Steady moderate pace — zone 2, you should be able to talk but not sing', s:'1 session', r:'20–25 min'}
+      ]},
+      circuit: {label:'Abs circuit — 3 rounds, 30s rest between exercises', items:[
+        {n:'Dead bug', c:'Lower back flat throughout — opposite arm and leg extend slowly. Best pure anti-extension exercise', s:'3 rounds', r:'10 each side'},
+        {n:'Hollow body hold', c:'Lower back pressed down, legs and shoulders off the floor — if it breaks, bend the knees', s:'3 rounds', r:'30s'},
+        {n:'Ab wheel rollout (or plank)', c:'From knees — roll out until hips want to drop, pull back. Sub: 40s plank with posterior pelvic tilt', s:'3 rounds', r:'8–10'},
+        {n:'Hanging knee raise', c:'From pull-up bar — tuck knees to chest, control the descent. No swinging', s:'3 rounds', r:'12–15'},
+        {n:'Side plank with hip dip', c:'Elbow under shoulder — lower hip to floor and drive back up. Obliques and lateral core', s:'3 rounds', r:'12 each side'},
+        {n:'Bicycle crunch', c:'Slow and controlled — elbow to opposite knee with full rotation. Speed kills the stimulus', s:'3 rounds', r:'20 total'}
+      ]},
+      total: {rest:'Rest 60s between rounds · no rest between exercises', time:'~45 min total'}
+    }
+  };
+  const cd = cardioData[lang];
+  document.getElementById('wo-cardio').innerHTML =
+    `<div class="phase-div"><span>${cd.cardio.label}</span></div>` +
+    cd.cardio.items.map(e=>`<div class="ex-row"><div><div class="ex-name">${e.n}</div><div class="ex-cue">${e.c}</div></div><div class="badge b-sets">${e.s}</div><div class="badge b-time">${e.r}</div></div>`).join('') +
+    `<div class="phase-div"><span>${cd.circuit.label}</span></div>` +
+    cd.circuit.items.map(e=>`<div class="ex-row"><div><div class="ex-name">${e.n}</div><div class="ex-cue">${e.c}</div></div><div class="badge b-sets">${e.s}</div><div class="badge b-reps">${e.r}</div></div>`).join('') +
+    `<div class="total-bar"><span>${cd.total.rest}</span><span>${cd.total.time}</span></div>`;
 
   ['legs','push','pull','hyrox'].forEach(s=>{
     const wk=s==='hyrox'?'warn.hyrox.wu':null;
